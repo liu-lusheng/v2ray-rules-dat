@@ -177,7 +177,8 @@ jobs:
       - name: Build geoip.db from geoip.dat
         run: |
           cd custom || exit 1
-          go run ./ --datapath=../geoip.dat            
+          mkdir lls && cp ../geoip.dat lls/geoip.dat
+          go run ./ --datapath=lls            
 
       - name: Move and zip files and generate sha256 hash
         run: |
