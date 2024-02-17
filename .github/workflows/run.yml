@@ -178,7 +178,7 @@ jobs:
         run: |
           cd custom || exit 1
           mkdir lls && cp ../geoip.dat lls/geoip.dat
-          go run ./ --datapath=lls            
+          go run ./ --datapath=./lls            
 
       - name: Move and zip files and generate sha256 hash
         run: |
