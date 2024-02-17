@@ -176,9 +176,9 @@ jobs:
           
       - name: Build geoip.db from geoip.dat
         run: |
-          cd custom || exit 1
-          mkdir lls && cp ../geoip.dat lls/geoip.dat
-          go run ./ --datapath=./lls            
+          cd custom-lls || exit 1
+          cp ../geoip.dat geoip.dat
+          go run ./           
 
       - name: Move and zip files and generate sha256 hash
         run: |
@@ -186,7 +186,7 @@ jobs:
           install -Dp ./geoip.dat.sha256sum ./publish/geoip.dat.sha256sum
           install -Dp ./custom/publish/geosite.dat ./publish/geosite.dat
           install -Dp ./custom/publish/geosite.db ./publish/geosite.db
-          install -Dp ./custom/publish/geoip.dat ./publish/geoip.db
+          install -Dp ./custom-lls/publish/geoip.dat ./publish/geoip.db
           install -p {proxy,direct,reject}-tld-list.txt ./publish/
           install -p {proxy,direct,reject}-list.txt ./publish/
           install -p {china-list,apple-cn,google-cn,gfw,greatfire,win-spy,win-update,win-extra}.txt ./publish/
