@@ -168,12 +168,24 @@ jobs:
         run: |
           cd custom || exit 1
           go run ./ --datapath=../community/data
+          
+      - name: Build geosite.db file
+        run: |
+          cd custom || exit 1
+          go run ./ --datapath=../community/data
+          
+      - name: Build geoip.db from geoip.dat
+        run: |
+          cd custom || exit 1
+          go run ./ --datapath=../geoip.dat            
 
       - name: Move and zip files and generate sha256 hash
         run: |
           install -Dp ./geoip.dat ./publish/geoip.dat
           install -Dp ./geoip.dat.sha256sum ./publish/geoip.dat.sha256sum
           install -Dp ./custom/publish/geosite.dat ./publish/geosite.dat
+          install -Dp ./custom/publish/geosite.db ./publish/geosite.db
+          install -Dp ./custom/publish/geoip.dat ./publish/geoip.db
           install -p {proxy,direct,reject}-tld-list.txt ./publish/
           install -p {proxy,direct,reject}-list.txt ./publish/
           install -p {china-list,apple-cn,google-cn,gfw,greatfire,win-spy,win-update,win-extra}.txt ./publish/
