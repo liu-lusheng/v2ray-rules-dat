@@ -40,7 +40,13 @@ jobs:
         with:
           repository: Loyalsoldier/domain-list-custom
           path: custom
-
+          
+      - name: Checkout liu-lusheng/sing-geoip
+        uses: actions/checkout@v4
+        with:
+          repository: liu-lusheng/sing-geoip
+          path: sing-geoip
+          
       - name: Checkout v2fly/domain-list-community
         uses: actions/checkout@v4
         with:
@@ -56,11 +62,11 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: ./custom/go.mod
-          cache-dependency-path: ./custom/go.sum
+          go-version: '>=1.18.0'
 
       - name: Get geoip.dat relative files
         run: |
+          wget https://github.com/Loyalsoldier/geoip/raw/release/Country.mmdb
           wget https://github.com/Loyalsoldier/geoip/raw/release/geoip.dat
           wget https://github.com/Loyalsoldier/geoip/raw/release/geoip.dat.sha256sum
 
@@ -169,24 +175,18 @@ jobs:
           cd custom || exit 1
           go run ./ --datapath=../community/data
           
-      - name: Build geosite.db file
+      - name: Build geoip.db
         run: |
-          cd custom || exit 1
-          go run ./ --datapath=../community/data
+          cd sing-geoip || exit 1
+          cp ../Country.mmdb Country.mmdb
+          go run ./ Country.mmdb geoip.db
           
-      - name: Build geoip.db from geoip.dat
-        run: |
-          cd custom-lls || exit 1
-          cp ../geoip.dat geoip.dat
-          go run ./           
-
       - name: Move and zip files and generate sha256 hash
         run: |
           install -Dp ./geoip.dat ./publish/geoip.dat
           install -Dp ./geoip.dat.sha256sum ./publish/geoip.dat.sha256sum
           install -Dp ./custom/publish/geosite.dat ./publish/geosite.dat
-          install -Dp ./custom/publish/geosite.db ./publish/geosite.db
-          install -Dp ./custom-lls/publish/geoip.dat ./publish/geoip.db
+          install -Dp ./sing-geoip/publish/geoip.db ./publish/geoip.db
           install -p {proxy,direct,reject}-tld-list.txt ./publish/
           install -p {proxy,direct,reject}-list.txt ./publish/
           install -p {china-list,apple-cn,google-cn,gfw,greatfire,win-spy,win-update,win-extra}.txt ./publish/
